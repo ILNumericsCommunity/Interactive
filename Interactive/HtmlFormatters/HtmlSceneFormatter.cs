@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using ILNumerics.Drawing;
+using Microsoft.AspNetCore.Html;
 using Microsoft.DotNet.Interactive.Formatting;
 using Scene = ILNumerics.Drawing.Scene;
 using static ILNumerics.Community.Interactive.HtmlContentUtility;
@@ -41,46 +42,47 @@ public class HtmlSceneFormatter : ITypeFormatter
 
     private void RenderPng(FormatContext context, Scene scene)
     {
-        // Render bitmap
-        var graphSize = InteractiveOptions.GraphSize;
-        var driver = new GDIDriver(graphSize.X, graphSize.Y, scene);
-        driver.Render();
-        //driver.BackBuffer.Bitmap.SetResolution(300, 300);
-        var bitmap = driver.BackBuffer.Bitmap;
+        var bitmap = scene.RenderSKBitmap();
 
         // Embed base64-encoded PNG as HTML content
-        context.Writer.Write(WritePNG(bitmap, graphSize.X, graphSize.Y));
+        context.Writer.Write(WritePNG(bitmap));
     }
 
     private void RenderSvg(FormatContext context, Scene scene)
     {
-        using (var memoryStream = new MemoryStream())
-        {
-            // Render SVG into memory stream
-            var graphSize = InteractiveOptions.GraphSize;
-            new SVGDriver(memoryStream, graphSize.X, graphSize.Y, scene).Render();
+        using var memoryStream = new MemoryStream();
 
-            var svgBytes = memoryStream.ToArray();
-            if (svgBytes.Length <= InteractiveOptions.GraphSvgSizeLimit)
-            {
-                // Embed SVG as HTML content
-                context.Writer.Write(WriteSVG(memoryStream.ToArray()));
-            }
-            else
-            {
-                // Fallback to embedded bitmap (Png) if the SVG source size is too large (very slow rendering)
-                RenderPng(context, scene);
-                context.Writer.WriteLine(div(b($"Note: SVG output too large (> {InteractiveOptions.GraphSvgSizeLimit / (1000 * 1000)} MBytes). Using bitmap (PNG) instead.")));
-            }
+        // Render SVG into memory stream
+        var graphSize = InteractiveOptions.GraphSize;
+        new SVGDriver(memoryStream, graphSize.Width, graphSize.Height, scene).Render();
+
+        var svgBytes = memoryStream.ToArray();
+        if (svgBytes.Length <= InteractiveOptions.GraphSvgSizeLimit)
+        {
+            // Embed SVG as HTML content
+            context.Writer.Write(WriteSVG(memoryStream.ToArray()));
+        }
+        else
+        {
+            // Fallback to embedded bitmap (Png) if the SVG source size is too large (very slow rendering)
+            context.Writer.WriteLine(div(b($"Note: SVG output too large (> {InteractiveOptions.GraphSvgSizeLimit / (1000 * 1000)} MBytes). Using bitmap (PNG) instead.")));
+            RenderPng(context, scene);
         }
     }
 
     private void RenderWebPlotly(FormatContext context, Scene scene)
     {
-        var plotlyChart = WebExport.WebExport.Export(scene)?.Render();
-        if (plotlyChart != null)
-            plotlyChart.FormatTo(context, MimeType);
+        var chart = WebExport.WebExport.GetChart(scene);
+        if (chart != null)
+        {
+            var htmlString = chart.Render();
+            context.Writer.Write(new HtmlString(htmlString));
+        }
         else
-            RenderSvg(context, scene); // Fallback to SVG output
+        {
+            // Fallback to SVG output
+            context.Writer.WriteLine(div(b("Note: HTML Plotly output not possible. Using SVG instead.")));
+            RenderSvg(context, scene);
+        }
     }
 }

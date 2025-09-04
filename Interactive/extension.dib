@@ -1,0 +1,3 @@
+#!csharp
+
+ILNumerics.Community.Interactive.ILNumericsKernelExtension.Load(Microsoft.DotNet.Interactive.KernelInvocationContext.Current.HandlingKernel.RootKernel);

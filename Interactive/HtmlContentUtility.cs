@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using Microsoft.AspNetCore.Html;
+using SkiaSharp;
 using static Microsoft.DotNet.Interactive.Formatting.PocketViewTags;
 
 namespace ILNumerics.Community.Interactive;
@@ -16,32 +15,29 @@ public static class HtmlContentUtility
     /// <summary>
     /// Generates HTML content with a base64-encoded embedded PNG image.
     /// </summary>
-    /// <param name="bitmap">The bitmap to convert to PNG.</param>
-    /// <param name="width">The width of the image.</param>
-    /// <param name="height">The height of the image.</param>
+    /// <param name="bitmap">The bitmap to encode as PNG image.</param>
     /// <returns>An <see cref="IHtmlContent"/> containing the embedded PNG image.</returns>
-    public static IHtmlContent WritePNG(Bitmap bitmap, int width, int height)
+    public static IHtmlContent WritePNG(SKBitmap bitmap)
     {
-        using (var memoryStream = new MemoryStream())
-        {
-            bitmap.Save(memoryStream, ImageFormat.Png);
+        // Write bitmap into memory stream
+        using var memoryStream = new MemoryStream();
+        using var image = SKImage.FromBitmap(bitmap);
+        image.Encode(SKEncodedImageFormat.Png, 100).SaveTo(memoryStream);
 
-            return WritePNG(memoryStream.ToArray(), width, height);
-        }
+        return WritePNG(memoryStream.ToArray(), new System.Drawing.Size(bitmap.Width, bitmap.Height));
     }
 
     /// <summary>
     /// Generates HTML content with a base64-encoded embedded PNG image.
     /// </summary>
     /// <param name="pngBytes">The byte array of the PNG image.</param>
-    /// <param name="width">The width of the image.</param>
-    /// <param name="height">The height of the image.</param>
+    /// <param name="graphSize">The size of the image.</param>
     /// <returns>An <see cref="IHtmlContent"/> containing the embedded PNG image.</returns>
-    public static IHtmlContent WritePNG(byte[] pngBytes, int width, int height)
+    public static IHtmlContent WritePNG(byte[] pngBytes, System.Drawing.Size graphSize)
     {
         var imageSource = $"data:image/png;base64,{Convert.ToBase64String(pngBytes)}";
 
-        return img[src: imageSource, width: width, height: height]();
+        return img[src: imageSource, width: graphSize.Width, height: graphSize.Height]();
     }
 
     /// <summary>
@@ -70,10 +66,7 @@ public static class HtmlContentUtility
 
     #region Private
 
-    private static string GetId(string type)
-    {
-        return type + Guid.NewGuid().ToString("N");
-    }
+    private static string GetId(string type) => type + Guid.NewGuid().ToString("N");
 
     #endregion
 }

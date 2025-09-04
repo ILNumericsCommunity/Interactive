@@ -1,23 +1,22 @@
 ﻿using System;
-using System.Drawing;
 using Microsoft.DotNet.Interactive.Formatting;
+using SkiaSharp;
 using static ILNumerics.Community.Interactive.HtmlContentUtility;
 
 namespace ILNumerics.Community.Interactive.HtmlFormatters;
 
-public class HtmlBitmapFormatter : ITypeFormatter
+public class HtmlSKBitmapFormatter : ITypeFormatter
 {
     public string MimeType => HtmlFormatter.MimeType;
 
-    public Type Type => typeof(Bitmap);
+    public Type Type => typeof(SKBitmap);
 
     public bool Format(object instance, FormatContext context)
     {
-        if (instance is not Bitmap bitmap)
+        if (instance is not SKBitmap bitmap)
             return false;
 
-        var graphSize = InteractiveOptions.GraphSize;
-        context.Writer.Write(WritePNG(bitmap, graphSize.X, graphSize.Y));
+        context.Writer.Write(WritePNG(bitmap));
 
         return true;
     }

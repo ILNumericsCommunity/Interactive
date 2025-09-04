@@ -10,6 +10,7 @@ namespace ILNumerics.Community.Interactive.HtmlFormatters;
 
 public abstract class HtmlArrayFormatterBase
 {
+    // TODO: Rewrite this to use DataTables JS library for better interactivity (scrolling, sorting, filtering, paging, ...)
     protected void FormatTable<T>(FormatContext context, BaseArray<T> array, TextWriter writer)
     {
         var maxElements = InteractiveOptions.MaxArrayElements;
