@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using ILNumerics.Drawing;
-using Microsoft.AspNetCore.Html;
 using Microsoft.DotNet.Interactive.Formatting;
 using Scene = ILNumerics.Drawing.Scene;
 using static ILNumerics.Community.Interactive.HtmlContentUtility;
-using static Microsoft.DotNet.Interactive.Formatting.PocketViewTags;
 
 namespace ILNumerics.Community.Interactive.HtmlFormatters;
 
@@ -34,7 +32,7 @@ public class HtmlSceneFormatter : ITypeFormatter
                 RenderWebPlotly(context, scene);
                 break;
             default:
-                throw new ArgumentOutOfRangeException();
+                return false;
         }
 
         return true;
@@ -60,12 +58,14 @@ public class HtmlSceneFormatter : ITypeFormatter
         if (svgBytes.Length <= InteractiveOptions.GraphSvgSizeLimit)
         {
             // Embed SVG as HTML content
-            context.Writer.Write(WriteSVG(memoryStream.ToArray()));
+            context.Writer.Write(WriteSVG(svgBytes));
         }
         else
         {
             // Fallback to embedded bitmap (Png) if the SVG source size is too large (very slow rendering)
-            context.Writer.WriteLine(div(b($"Note: SVG output too large (> {InteractiveOptions.GraphSvgSizeLimit / (1000 * 1000)} MBytes). Using bitmap (PNG) instead.")));
+            var note = $"<div><b>Note: SVG output too large (&gt; {InteractiveOptions.GraphSvgSizeLimit / (1000 * 1000)} MBytes). Using bitmap (PNG) instead.</b></div>";
+            context.Writer.WriteLine(note);
+
             RenderPng(context, scene);
         }
     }
@@ -75,13 +75,16 @@ public class HtmlSceneFormatter : ITypeFormatter
         var chart = WebExport.WebExport.GetChart(scene);
         if (chart != null)
         {
-            var htmlString = chart.Render();
-            context.Writer.Write(new HtmlString(htmlString));
+            // Render Plotly chart
+            var htmlString = chart.RenderPartial();
+            context.Writer.Write(htmlString);
         }
         else
         {
             // Fallback to SVG output
-            context.Writer.WriteLine(div(b("Note: HTML Plotly output not possible. Using SVG instead.")));
+            var note = "<div><b>Note: HTML Plotly output not possible. Using SVG instead.</b></div>";
+            context.Writer.WriteLine(note);
+
             RenderSvg(context, scene);
         }
     }

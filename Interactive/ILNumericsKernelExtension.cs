@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using ILNumerics.Community.Interactive.HtmlFormatters;
 using ILNumerics.Community.Interactive.PlainTextFormatters;
 using ILNumerics.Drawing;
@@ -43,11 +42,11 @@ public class ILNumericsKernelExtension : IKernelExtension
         Formatter.SetPreferredMimeTypesFor(typeof(RetArray<complex>), HtmlFormatter.MimeType);
         Formatter.Register(new HtmlRetArrayFormatter());
 
-        // Formatters: SceneGraph
-        Formatter.SetPreferredMimeTypesFor(typeof(SKBitmap), HtmlFormatter.MimeType);
-        Formatter.Register(new HtmlSKBitmapFormatter());
+        // Formatters: Scene (and SKBitmap)
         Formatter.SetPreferredMimeTypesFor(typeof(Scene), HtmlFormatter.MimeType);
         Formatter.Register(new HtmlSceneFormatter());
+        Formatter.SetPreferredMimeTypesFor(typeof(SKBitmap), HtmlFormatter.MimeType);
+        Formatter.Register(new HtmlSKBitmapFormatter());
 
         // Load Extension
         var extension = new ILNumericsKernelExtension();
@@ -69,6 +68,7 @@ public class ILNumericsKernelExtension : IKernelExtension
         await kernelCSharp.SubmitCodeAsync("using static ILNumerics.Globals;");
         await kernelCSharp.SubmitCodeAsync("using static ILNumerics.Community.Interactive.Plots.QuickPlot;");
 
+        // Welcome Message
         if (KernelInvocationContext.Current is { } context)
         {
             var message = new HtmlString("<hr>"

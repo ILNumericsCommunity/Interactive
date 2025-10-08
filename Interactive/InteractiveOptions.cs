@@ -32,5 +32,5 @@ public static class InteractiveOptions
     public static Matrix4 GraphSurfRotation { get; set; } = Matrix4.Rotation(new Vector3(1f, 0.23f, 1), 0.7f);
 
     /// <summary>Gets or sets the maximum array elements to display (before the array output gets truncated).</summary>
-    public static int MaxArrayElements { get; set; } = 50;
+    public static int MaxArrayElements { get; set; } = 100;
 }

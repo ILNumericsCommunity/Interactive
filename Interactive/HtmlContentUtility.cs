@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using Microsoft.AspNetCore.Html;
 using SkiaSharp;
-using static Microsoft.DotNet.Interactive.Formatting.PocketViewTags;
+using System.Net;
 
 namespace ILNumerics.Community.Interactive;
 
@@ -37,7 +37,10 @@ public static class HtmlContentUtility
     {
         var imageSource = $"data:image/png;base64,{Convert.ToBase64String(pngBytes)}";
 
-        return img[src: imageSource, width: graphSize.Width, height: graphSize.Height]();
+        // Build a simple <img> tag string similar to PocketView output
+        var imgHtml = $"<img src=\"{imageSource}\" width=\"{graphSize.Width}\" height=\"{graphSize.Height}\" />";
+
+        return new HtmlString(imgHtml);
     }
 
     /// <summary>
@@ -61,12 +64,15 @@ public static class HtmlContentUtility
         svgContent = svgContent.Replace("<!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>", ""); // Strip DocType header
         svgContent = svgContent.Replace("\r\n", ""); // Strip all line breaks
 
-        return div[id: GetId("svg-")](new HtmlString(svgContent));
+        var id = GetId("svg-");
+        var divHtml = $"<div id=\"{WebUtility.HtmlEncode(id)}\">{svgContent}</div>";
+
+        return new HtmlString(divHtml);
     }
 
     #region Private
 
-    private static string GetId(string type) => type + Guid.NewGuid().ToString("N");
+    internal static string GetId(string type) => type + Guid.NewGuid().ToString("N");
 
     #endregion
 }
