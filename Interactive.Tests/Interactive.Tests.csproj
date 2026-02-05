@@ -8,7 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.DotNet.Interactive.CSharp" Version="1.0.0-beta.25323.1" />
     <PackageReference Include="Microsoft.DotNet.Interactive.Formatting" Version="1.0.0-beta.25323.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="xunit" Version="2.9.3" />
   </ItemGroup>
   

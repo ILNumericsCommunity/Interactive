@@ -8,12 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ILNumerics.Community.TikzExport" Version="7.0.0.247" />
+    <PackageReference Include="ILNumerics.Community.TikzExport" Version="7.1.1.35" />
+    <PackageReference Include="ILNumerics.Community.Analyzers" Version="7.3.0.66" />
     <PackageReference Include="ILNumerics.Community.WebExport" Version="7.0.0.280" />
-    <PackageReference Include="ILNumerics.Computing" Version="7.3.61" />
-    <PackageReference Include="ILNumerics.Drawing" Version="7.3.61" />
+    <PackageReference Include="ILNumerics.Computing" Version="7.4.16" />
+    <PackageReference Include="ILNumerics.Drawing" Version="7.4.16" />
     <PackageReference Include="Microsoft.DotNet.Interactive.CSharp" Version="1.0.0-beta.25323.1" />
-    <PackageReference Include="MinVer" Version="6.0.0">
+    <PackageReference Include="MinVer" Version="7.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

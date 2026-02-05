@@ -24,7 +24,7 @@ public static partial class QuickPlot
     public static Scene Surf(InArray<float> ZXYPositions, InArray<float> C = null,
                              AxisScale xAxisScale = AxisScale.Linear, AxisScale yAxisScale = AxisScale.Linear, AxisScale zAxisScale = AxisScale.Linear)
     {
-        using (Scope.Enter(ZXYPositions))
+        using (Scope.Enter(ZXYPositions, C))
         {
             if (isnull(ZXYPositions))
                 throw new ArgumentNullException(nameof(ZXYPositions));
@@ -101,6 +101,7 @@ public static partial class QuickPlot
     /// <param name="yAxisLabel">Label for the Y axis.</param>
     /// <param name="zAxisLabel">Label for the Z axis.</param>
     /// <returns>A scene containing the surface plot.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when Z is null.</exception>
     /// <exception cref="ArgumentException">Thrown when Z, X, or Y are not valid matrices or vectors.</exception>
     public static Scene Surf(InArray<float> Z, InArray<float> X, InArray<float> Y, InArray<float> C = null,
                              AxisScale xAxisScale = AxisScale.Linear, AxisScale yAxisScale = AxisScale.Linear, AxisScale zAxisScale = AxisScale.Linear,
@@ -108,8 +109,10 @@ public static partial class QuickPlot
     {
         using (Scope.Enter(Z, X, Y, C))
         {
-            if (!isnull(Z) && !Z.IsVector && !Z.IsMatrix)
-                throw new ArgumentException("Argument 'X' must be null, a vector of length n or a matrix of size [m by n], with m = Z.S[0], n = Z.S[1].");
+            if (isnull(Z))
+                throw new ArgumentNullException(nameof(Z));
+            if (!Z.IsVector && !Z.IsMatrix)
+                throw new ArgumentException("Argument 'Z' must be a vector of length n or a matrix of size [m by n], with m = Z.S[0], n = Z.S[1].");
             if (!isnull(X) && !X.IsVector && !X.IsMatrix)
                 throw new ArgumentException("Argument 'X' must be null, a vector of length n or a matrix of size [m by n], with m = Z.S[0], n = Z.S[1].");
             if (!isnull(Y) && !Y.IsVector && !Y.IsMatrix)
@@ -146,6 +149,7 @@ public static partial class QuickPlot
     /// <param name="yAxisLabel">Label for the Y axis.</param>
     /// <param name="zAxisLabel">Label for the Z axis.</param>
     /// <returns>A scene containing the surface plot.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when Z is null.</exception>
     /// <exception cref="ArgumentException">Thrown when Z, X, or Y are not valid matrices or vectors.</exception>
     public static Scene Surf(InArray<double> Z, InArray<double> X, InArray<double> Y, InArray<float> C = null,
                              AxisScale xAxisScale = AxisScale.Linear, AxisScale yAxisScale = AxisScale.Linear, AxisScale zAxisScale = AxisScale.Linear,
@@ -153,8 +157,10 @@ public static partial class QuickPlot
     {
         using (Scope.Enter(Z, X, Y, C))
         {
-            if (!isnull(Z) && !Z.IsVector && !Z.IsMatrix)
-                throw new ArgumentException("Argument 'X' must be null, a vector of length n or a matrix of size [m by n], with m = Z.S[0], n = Z.S[1].");
+            if (isnull(Z))
+                throw new ArgumentNullException(nameof(Z));
+            if (!Z.IsVector && !Z.IsMatrix)
+                throw new ArgumentException("Argument 'Z' must be a vector of length n or a matrix of size [m by n], with m = Z.S[0], n = Z.S[1].");
             if (!isnull(X) && !X.IsVector && !X.IsMatrix)
                 throw new ArgumentException("Argument 'X' must be null, a vector of length n or a matrix of size [m by n], with m = Z.S[0], n = Z.S[1].");
             if (!isnull(Y) && !Y.IsVector && !Y.IsMatrix)

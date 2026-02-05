@@ -17,6 +17,9 @@ public enum GraphMode
     WebPlotly
 }
 
+/// <summary>
+/// Provides configuration options for ILNumerics interactive rendering.
+/// </summary>
 public static class InteractiveOptions
 {
     /// <summary>Gets or sets the graph mode, i.e. how the Scene is displayed.</summary>

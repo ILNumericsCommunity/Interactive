@@ -70,7 +70,9 @@ public static class SceneUtility
         filePath = Path.ChangeExtension(filePath, ".png");
         graphSize ??= InteractiveOptions.GraphSize;
 
-        var bitmap = scene.RenderSKBitmap(graphSize);
+        using var bitmap = scene.RenderSKBitmap(graphSize);
+        if (bitmap is null)
+            throw new InvalidOperationException("Failed to render the scene to a bitmap.");
 
         using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
         using var image = SKImage.FromBitmap(bitmap);
@@ -86,8 +88,6 @@ public static class SceneUtility
     internal static SKBitmap? RenderSKBitmap(this Scene scene, System.Drawing.Size? graphSize = null)
     {
         graphSize ??= InteractiveOptions.GraphSize;
-
-        using var memoryStream = new MemoryStream();
 
         // Render bitmap
         var driver = new GDIDriver(new CommonBackBuffer(), scene);

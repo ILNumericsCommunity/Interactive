@@ -7,12 +7,21 @@ using Microsoft.DotNet.Interactive.Formatting;
 
 namespace ILNumerics.Community.Interactive.HtmlFormatters;
 
+/// <summary>
+/// Base class for HTML formatters that render ILNumerics arrays as tables.
+/// </summary>
 public abstract class HtmlArrayFormatterBase
 {
     private const string JQueryJsCdn = "https://code.jquery.com/jquery-3.7.1.min.js";
     private const string DataTablesJsCdn = "https://cdn.datatables.net/2.3.4/js/dataTables.min.js";
     private const string DataTablesCssCdn = "https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.min.css";
 
+    /// <summary>
+    /// Writes an HTML table representation of the array to the specified writer.
+    /// </summary>
+    /// <typeparam name="T">The array element type.</typeparam>
+    /// <param name="array">The array to render.</param>
+    /// <param name="writer">The writer to receive the HTML output.</param>
     protected void FormatTable<T>(BaseArray<T> array, TextWriter writer)
     {
         var maxElements = InteractiveOptions.MaxArrayElements;

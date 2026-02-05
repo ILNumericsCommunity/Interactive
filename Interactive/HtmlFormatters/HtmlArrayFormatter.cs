@@ -4,14 +4,29 @@ using static ILNumerics.ILMath;
 
 namespace ILNumerics.Community.Interactive.HtmlFormatters;
 
+/// <summary>
+/// Formats ILNumerics arrays as HTML tables.
+/// </summary>
 public class HtmlArrayFormatter : HtmlArrayFormatterBase, ITypeFormatter
 {
     #region ITypeFormatter Members
 
+    /// <summary>
+    /// Gets the supported MIME type.
+    /// </summary>
     public string MimeType => HtmlFormatter.MimeType;
 
+    /// <summary>
+    /// Gets the supported type.
+    /// </summary>
     public Type Type => typeof(Array<>);
 
+    /// <summary>
+    /// Formats an array instance as HTML.
+    /// </summary>
+    /// <param name="instance">The instance to format.</param>
+    /// <param name="context">The formatting context.</param>
+    /// <returns><see langword="true"/> when formatted; otherwise <see langword="false"/>.</returns>
     public bool Format(object instance, FormatContext context)
     {
         switch (instance)
